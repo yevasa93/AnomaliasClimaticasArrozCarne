@@ -1,0 +1,8 @@
+NOTAS de la consolidación:
+- Columnas: Fecha, Anio, Mes, Grupo, Producto, Mercado, Precio_kg.
+- 762.919 registros, de enero de 2013 a septiembre de 2026. Todos los años tienen sus 12 meses, excepto 2026, que llega hasta septiembre.
+- Del archivo 2013-2017 se leyeron las hojas 1.1 a 1.5, una por año.
+- Encabezados: la fila de encabezado está en un lugar distinto según el archivo, así que el código la encuentra solo. Además, unifiqué nombres que cambiaban entre años: Fuente pasó a Mercado, y las variantes de "Precio…" pasaron a Precio_kg.
+- Grupos repetidos: había grupos duplicados por las tildes (TUBÉRCULOS y TUBERCULOS). Los dejé sin tildes y quedaron 8 grupos.
+- Filas eliminadas: quité 213 filas de notas al pie o en blanco. No había registros duplicados.
+- Columnas que no incluidas: Código CPC, Departamento y Municipio solo aparecen en 2025-2026, así que no las incluí.
