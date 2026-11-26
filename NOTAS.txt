@@ -6,3 +6,84 @@ NOTAS de la consolidación:
 - Grupos repetidos: había grupos duplicados por las tildes (TUBÉRCULOS y TUBERCULOS). Los dejé sin tildes y quedaron 8 grupos.
 - Filas eliminadas: quité 213 filas de notas al pie o en blanco. No había registros duplicados.
 - Columnas que no incluidas: Código CPC, Departamento y Municipio solo aparecen en 2025-2026, así que no las incluí.
+
+BIBLIOGRAFIA
+- https://www.dane.gov.co/index.php/servicios-al-ciudadano/servicios-informacion/sipsa
+- https://www.dane.gov.co/index.php/estadisticas-por-tema/agropecuario/sistema-de-informacion-de-precios-sipsa
+- https://www.cpc.ncep.noaa.gov/data/indices/
+- https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt
+- https://github.com/yevasa93/AnomaliasClimaticasArrozCarne/tree/main/processed_data
+- https://uba.banrep.gov.co/htmlcommons/SeriesHistoricas/precios-inflacion.html
+- https://www.upme.gov.co/simec/hidrocarburos/combustibles-liquidos/
+- https://www.ideam.gov.co/nuestra-entidad/servicio-de-pronosticos-y-alertas
+- De dónde salen los datos: del Banco Mundial, en la página worldbank.org/en/research/commodity-markets, sección "Pink Sheet Data" → "Monthly prices (XLS)". El enlace directo a la versión de noviembre de 2026, que es la más reciente, es este:
+https://thedocs.worldbank.org/en/doc/74e8be41ceb20fa0da750cda2f6b9e4e-0050012026/related/CMO-Historical-Data-Monthly.xlsx
+
+EXPLICAR
+*que son y cuando se usan intervalos por bootstrap de bloques y errores HAC (Newey-West), que reconocen que los meses vecinos no son independientes.
+*explicame que es y cuando se usa Kruskal-WallisLos, se menciono por ejemplo en: meses del año explican solo alrededor de una quinta parte de la variación mensual (R² = 0,20 en la carne y 0,18 en el arroz), aunque son significativos (Kruskal-Wallis p < 0,001 y p = 0,009).
+* que es el IC
+* explicar la sección 3.5. Efecto asimétrico por rezago y relación con la multicolinealidad de los rezagos
+Se estima, para cada rezago k, la regresión variación anual = a + b₁·El Niño(t−k) + b₂·La Niña(t−k) con errores HAC. Separar las dos fases permite ver si el efecto es simétrico. El gráfico muestra el coeficiente (pp de variación anual por °C de intensidad) con su IC 95 %. Después se ajusta el modelo con los cuatro rezagos de datos_modelo (1, 3, 6 y 12) sobre la variación mensual sin estacionalidad, para ver cuánto aporta y qué tan estable es, y se prueba causalidad de Granger (es es causalidad de granger?).
+* sección 3.7 que es choques por fase, Se compara la frecuencia de choques por fase (mismo mes y fase de 3 meses antes) con la prueba exacta de Fisher (que es y cuando se usa); el riesgo relativo usa la corrección de Haldane-Anscombe - que es y cuando se usa? - (+0,5) porque algunas celdas tienen cero casos. Además se mide la relación entre la intensidad (|ONI|) y la volatilidad.
+en la misma 3.7 Hay que tener en cuenta que Spearman (que es, cuando y porque se usa) con ventanas móviles solapadas tiene p-valores optimistas; se toma como orientación.
+* Resumir cada categoría en un índice (como en 3.1) pierde poca información, ese índice se calculo como un promedio entre los productos?
+
+
+
+
+*después del 2023 a pesar de un ONI alto en el niño el precio del arroz parece estar bajando, ocurrió algo adicional? mayor nivel de importación, medidas políticas o tecnológicas?
+* el alto impacto en el precio de la carne de res (que no aparece haber afectado el arroz) en el periodo del 2021-23 se dio a un ONI de la niña o y grandes inundaciones en zonas ganaderas (que parece no haber afectado al arroz, pese a que comparte zonas importantes como el meta y Casanare) o parece mas ser un efecto inflacionario post-pandemia?  
+
+OTRAS NOTAS
+
+- los tiempos de cultivos de arroz (de 4 a 5 meses) sirve el resago de 3,6 meses y carne puede tardar 2 años en ambientes tecnificados, pero en Colombia extensivo en pasto puede ser de 2.5-3 años
+
+PREGUNTAR
+
+#. Como podemos quitar el efecto pospandemia que parece estar generando inflación en precios o fue el paro nacional en 2021?
+#. reducir productos antes de etapa 3? o con las validaciones que realizamos que quedaron en un solo índice estaría bien?
+#. los resultados de la sección 3.4 son como raros
+#. en la 3.5 quizá sea mejor quitar los lags en el ONI ya que muestra multicolinealidad,
+y hacer las comparaciones de 0,3,6, 12 meses (incluso 24 meses) directamente en las formulas
+
+
+SUGERENCIA PROFE
+#. en la temperatura mensual ver la cantidad de días que hizo mayor temperatura, y mayor lluvia - mirarlo con la temperatura o las precipitaciones que se dan por mes
+#. centrar el análisis en las zonas productoras, llanos, huila y Tolima
+#. primero mirar el modelo con inflación, trm, acpm, precio de fertilizante y luego con variables dummy lo atipico como huelgas, una caída de un puente, una pelea con ecuador con aranceles
+
+
+
+
+CORREGIR
+#. las graficas para que diga ZonaArroz y ZonasCarne, en lugar de arroz y carne
+#. revisar Redundancia: la anomalía climática de 12 meses se correlaciona entre 0,69 y 0,85 con el ONI de 6 meses antes. Hay que usar uno de los dos o regularizar.
+#. revisar ACPM: su relación más fuerte con los precios aparece a 12 meses y con signo distinto en cada producto. Refleja más la política de precios regulados que un efecto de costos, así que debe usarse con cautela. El ACPM no cambió en el 46 % de los meses (estuvo congelado en 2022-2023), así que solo aporta información en los momentos de ajuste de la política de precios.
+#. Hay mucha redundancia entre los indicadores climáticos:
+Las tres variables de calor se correlacionan entre 0,85 y 0,92.
+Lluvia total y lluvia fuerte se correlacionan en 0,99.
+La zona arrocera y la ganadera se mueven casi igual (0,83 a 0,92).
+
+>>>>> Variables candidatas para el modelado:
+
+**Carne:
+ONI con rezago de 1 o 3 meses.
+Anomalía de lluvia de 12 meses en la zona ganadera.
+Inflación como control, o modelar directamente la variación real.
+**Arroz:
+Variación anual de la tasa de cambio.
+Inflación.
+ONI o días ≥ 35 °C con rezago de 12 a 18 meses.
+
+>>> ONI 3 y 4: referencia a medio pacifico, diario para acumular, ayudan las variables tipo lag // y el ONI 1 y 2: es la zona costera // el ONI normal es el que afecta porque calcula después del evento y puede promediar futuro, toca calcularlo de acumulación diaria .
+
+
+>> si colocamos el ACPM agregarlo con con IPC, y precios de fertilizantes.
+
+>> montar un PCA: variable de componentes principales, para ver los cluster
+
+>> variables exogenas: como meterlas?? meterlas como variable categorica (hubo paro??)
+o estar dateado y decir que hubo fallas por XYZ // momentos por ejemplo de miedo de desabastecimiento, colocarlo en el marco teorico, para explicar el modelo cuando este desfazado, ejemplo la carne que no llega a precio base luego de pandemia
+
+
